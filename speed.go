@@ -22,12 +22,12 @@ func Speed(ctx *cli.Context) error {
 	count := ctx.Int("count")
 	server := ctx.String("server")
 
-	every := ctx.Int("every")
+	every := ctx.Int("time")
 
-	var sucTime, sunCount int = 0, 0
+	var sucTime, sunCount = 0, 0
 
 	for i := 0; i < count; i++ {
-		r, t, err := calcTime(domain, server)
+		r, t, err := calcTime(domain, server, dns.TypeA)
 		time.Sleep(time.Duration(every) * time.Millisecond)
 
 		if err != nil {

@@ -7,12 +7,12 @@ import (
 	"time"
 )
 
-func DnsQuery(domain, server string) (*dns.Msg, error) {
+func DnsQuery(domain, server string, qType uint16) (*dns.Msg, error) {
 
 	c := dns.Client{Timeout: 5 * time.Second}
 
 	m := dns.Msg{}
-	m.SetQuestion(domain+".", dns.TypeA)
+	m.SetQuestion(domain+".", qType)
 
 	r, _, err := c.Exchange(&m, server)
 	if err != nil {
@@ -23,10 +23,10 @@ func DnsQuery(domain, server string) (*dns.Msg, error) {
 	return r, nil
 }
 
-func calcTime(domain, server string) (*dns.Msg, time.Duration, error) {
+func calcTime(domain, server string, qType uint16) (*dns.Msg, time.Duration, error) {
 	t := time.Now()
 
-	r, err := DnsQuery(domain, server)
+	r, err := DnsQuery(domain, server, qType)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -40,7 +40,20 @@ func Dig(ctx *cli.Context) error {
 	domain := ctx.String("domain")
 	server := ctx.String("server")
 
-	r, t, err := calcTime(domain, server)
+	qType := dns.TypeANY
+
+	switch {
+	case ctx.Bool("ipv6"):
+		{
+			qType = dns.TypeAAAA
+		}
+	case ctx.Bool("ipv4"):
+		{
+			qType = dns.TypeA
+		}
+	}
+
+	r, t, err := calcTime(domain, server, qType)
 	if err != nil {
 		return fmt.Errorf("Timeout domain :%s, err:%s\n", domain, err.Error())
 	}

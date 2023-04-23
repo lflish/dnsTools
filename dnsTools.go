@@ -27,12 +27,26 @@ func main() {
 						Value:    "8.8.8.8:53",
 						Usage:    "-s 8.8.8.8:53",
 					},
+					&cli.BoolFlag{
+						Name:     "ipv4",
+						Aliases:  []string{"4"},
+						Required: false,
+						Value:    false,
+						Usage:    "-4",
+					},
+					&cli.BoolFlag{
+						Name:     "ipv6",
+						Aliases:  []string{"6"},
+						Required: false,
+						Value:    false,
+						Usage:    "-6",
+					},
 				},
 			},
 			{
 				Name:   "speed",
 				Action: Speed,
-				Usage:  "dnsTools speed -d github.com [-s 8.8.8.8:53] [-c 10] [-e 100]",
+				Usage:  "dnsTools speed -d github.com [-s 8.8.8.8:53] [-c 10] [-t 100]",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:     "domain",
